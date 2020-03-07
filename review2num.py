@@ -31,10 +31,11 @@ def Review2Num(review):
 
 
 def make_scores(reviews):
-	scores = pd.DataFrame(columns=["score"])
+	scores = pd.DataFrame(columns=["review_id", "score"])
 	num = reviews.shape[0]
 	for i in range(num):
-		scores.loc[i, "score"] = Review2Num(reviews[i])
+		scores.loc[i, "score"] = Review2Num(reviews.loc[i, "review_body"])
+		scores.loc[i, "review_id"] = reviews.loc[i, "review_id"]
 		print(i)
 	print(scores)
 	scores.to_csv("./run_data/microwave_scores.csv")
