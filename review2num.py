@@ -27,10 +27,12 @@ def Review2Num(review):
 	# softmax_word = softmax(word_score)	
 	# print(softmax_word)
 	lam = lambda x : np.abs(x)
+	if len(word_score) == 0:
+		return 0
 	return max(word_score, key=lam)
 
 
-def make_scores(reviews):
+def make_scores(reviews, product_name):
 	scores = pd.DataFrame(columns=["review_id", "score"])
 	num = reviews.shape[0]
 	for i in range(num):
@@ -38,7 +40,8 @@ def make_scores(reviews):
 		scores.loc[i, "review_id"] = reviews.loc[i, "review_id"]
 		print(i)
 	print(scores)
-	scores.to_csv("./run_data/microwave_scores.csv")
+	location = "./run_data/" + product_name + "_scores.csv"
+	scores.to_csv(location)
 	print("max:", max(scores["score"]))
 	print("min:", min(scores["score"]))
 	return scores

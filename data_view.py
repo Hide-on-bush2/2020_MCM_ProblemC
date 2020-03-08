@@ -5,11 +5,14 @@ import matplotlib.pyplot as plt
 from word2cloud import word2cloud
 
 def view(filename):
-	dryer = pd.read_csv(filename, sep='\t')
+	if filename == "./data/pacifier.tsv":
+		data = pd.read_csv("./data/pacifier2.tsv")
+		return data
+	data = pd.read_csv(filename, sep='\t')
 	# print(dryer)
-	information = dryer.describe()
+	information = data.describe()
 	# print(information)
 	
-	return dryer
+	return data
 
 	# plt.show(wc)

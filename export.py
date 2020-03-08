@@ -39,9 +39,20 @@ def count_sale(data, start_date, end_date, product_parent, i):
 
 
 
-def export(data):
+def export(data, product_name):
 	# print(data["review_date"][0])
 	# print(puple2date(get_date(data["review_date"][0])))
+	start = 0
+	end = 0
+	if product_name == "hair_dryer":
+		start = 361
+		end = 9587
+	elif product_name == "microwave":
+		start = 100
+		end = 822
+	else:
+		start = 668
+		end = 15978
 	delta = dt.timedelta(weeks=4)
 	sale = pd.DataFrame(columns=["review_id", "sale_count"])
 	num = data.shape[0]
@@ -50,10 +61,10 @@ def export(data):
 		curr_date = puple2date(get_date(data.loc[i, "review_date"]))
 		# sale.loc[i, "sale_count"] = count_sale(data, curr_date, curr_date + delta, pro_par, i)
 		# sale.loc[i, "review_id"] = data.loc[i, "review_id"]
-		if i < 100:
+		if i < start:
 			sale.loc[i, "sale_count"] = float('nan')
 			sale.loc[i, "review_id"] = data.loc[i, "review_id"]
-		elif i >= 984:
+		elif i >= end:
 			sale.loc[i, "sale_count"] = float('nan')
 			sale.loc[i, "review_id"] = data.loc[i, "review_id"]
 		else:
@@ -61,7 +72,8 @@ def export(data):
 			sale.loc[i, "review_id"] = data.loc[i, "review_id"]
 		print(i)
 	print(sale)
-	sale.to_csv("./ouput/microwave_export.csv")
+	location = "./ouput/" + product_name + "_export.csv"
+	sale.to_csv(location)
 	return sale
 
 
