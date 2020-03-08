@@ -26,10 +26,15 @@ def Review2Num(review):
 	# print(word_score)
 	# softmax_word = softmax(word_score)	
 	# print(softmax_word)
-	lam = lambda x : np.abs(x)
-	if len(word_score) == 0:
-		return 0
-	return max(word_score, key=lam)
+	# lam = lambda x : -np.abs(x)
+	# if len(word_score) == 0:
+	# 	return 0
+	# return max(word_score, key=lam)
+	# word_score = sorted(word_score, key=lam)
+	res = sum(word_score)
+	if res > 120:
+		return float('nan')
+	return np.log(res + 26) - np.log(26)
 
 
 def make_scores(reviews, product_name):
