@@ -145,7 +145,9 @@ For several words with positive emotions and negative emotions, we counted the p
 Not all words have similar discrimination, such as some words that are not related to emotion (price), or some neutral words (much). These words are not very distinguishable for scoring, so we think there is little relationships between these words and star rating. In addition, we can see from the figure that there are some words that are more distinguishable for star ratings. If these words appear in the reviews, the corresponding ratings are often linked to their positivity or negativeness.
 
 
+## 问题假设
 
+* 在对评论文本进行感情分析的时候，忽略单词顺序不同而造成的对评论感情倾向预测的影响。即我们假设"I love this hair dryer "和"the hair dryer love me"具有相同的感情色彩。
 
 
 
