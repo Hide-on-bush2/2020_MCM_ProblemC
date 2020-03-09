@@ -9,7 +9,7 @@ import wordcloud	#词云库
 from PIL import Image	#图像处理库
 
 
-def word2cloud(text):
+def word2cloud(text, product_name):
 	pattern1 = re.compile(u'\t|\n|\.|-|:|;|\)|\(|\?|"') #匹配标点符号的正则表达式
 	pattern2 = re.compile(r'<br />') #匹配一些无用符号的正则表达式
 	pattern3 = re.compile('<BR>')
@@ -34,101 +34,110 @@ def word2cloud(text):
 
 	# 词频统计
 	word_counts = collections.Counter(object_list) # 对分词做词频统计
-	word_counts_top10 = word_counts.most_common(20) # 获取前10最高频的词
-	# print (word_counts_top10) # 输出检查
+	word_counts_top10 = word_counts.most_common(100) # 获取前10最高频的词
+	classifier_f = open("./bayes_model/naivebayes.pickle", "rb")
+	classifier = pickle.load(classifier_f)
+	classifier_f.close()
+	f = open("./word_data/" + product_name + ".txt", "w")
+	for item in word_counts_top10:
+		class_ = classifier.prob_classify({item[0]:True})
+		if  class_.prob(1) < 0.3:
+			f.write(item[0] + ":" + str(item[1]) + "\n")
+	f.close()
+	print (word_counts_top10) # 输出检查
 
 	# 词频展示
-	mask = np.array(Image.open('./img/background.jpg')) # 定义词频背景
-	wc = wordcloud.WordCloud(
-	    background_color='white', # 设置背景颜色
-	    # font_path='/System/Library/Fonts/Hiragino Sans GB.ttc', # 设置字体格式
-	    mask=mask, # 设置背景图
-	    max_words=200, # 最多显示词数
-	    max_font_size=100 , # 字体最大值
-	    scale=10  # 调整图片清晰度，值越大越清楚
-	)
+	# mask = np.array(Image.open('./img/background.jpg')) # 定义词频背景
+	# wc = wordcloud.WordCloud(
+	#     background_color='white', # 设置背景颜色
+	#     # font_path='/System/Library/Fonts/Hiragino Sans GB.ttc', # 设置字体格式
+	#     mask=mask, # 设置背景图
+	#     max_words=200, # 最多显示词数
+	#     max_font_size=100 , # 字体最大值
+	#     scale=10  # 调整图片清晰度，值越大越清楚
+	# )
 
-	wc.generate_from_frequencies(word_counts) # 从字典生成词云
-	image_colors = wordcloud.ImageColorGenerator(mask) # 从背景图建立颜色方案
-	wc.recolor(color_func=image_colors) # 将词云颜色设置为背景图方案
-	wc.to_file("./img/temp.jpeg") # 将图片输出为文件
-	plt.imshow(wc) # 显示词云
-	plt.axis('off') # 关闭坐标轴
-	plt.show() # 显示图像
+	# wc.generate_from_frequencies(word_counts) # 从字典生成词云
+	# image_colors = wordcloud.ImageColorGenerator(mask) # 从背景图建立颜色方案
+	# wc.recolor(color_func=image_colors) # 将词云颜色设置为背景图方案
+	# wc.to_file("./img/temp.jpeg") # 将图片输出为文件
+	# plt.imshow(wc) # 显示词云
+	# plt.axis('off') # 关闭坐标轴
+	# plt.show() # 显示图像
 
 
-if __name__ == "__main__":
-	# classifier_f = open("./bayes_model/naivebayes.pickle", "rb")
-	# classifier = pickle.load(classifier_f)
-	# classifier_f.close()
-	# classifier.show_most_informative_features(100)
-	# class_ = classifier.prob_classify({"good":True})
-	# print(class_.prob(1), class_.prob(0))
-	# good_dic = {"works":21,
-	# 		"nice":9.7,
-	# 		"great":9.3,
-	# 		"Excellent":9.0,
-	# 		"price":8.4,
-	# 		"fine":8.3,
-	# 		"best":7.0,
-	# 		"lot":6.3,
-	# 		"fits":6.3,
-	# 		"cell":6.1,
-	# 		"free":5.7,
-	# 		"years":5.7,
-	# 		"highly":5.0,
-	# 		"Jabra":5.0,
-	# 		"without":5.0,
-	# 		"handas":5.0,
-	# 		"high":4.6,
-	# 		"quick":4,
-	# 		"well":4,
-	# 		"semm":4,
-	# 		"ears":4,
-	# 		"working":4
-	# 		}
-	bad_dic = {
-		"money":12.3,
-		"Not":9.7,
-		"Does":7.7,
-		"If":7.7,
-		"turn":6.6,
-		"calls":6.3,
-		"first":5.8,
-		"ON":5.7,
-		"No":5.2,
-		"by":5.0,
-		"will":5.0,
-		"hear":4.6,
-		"take":4.6,
-		"customer":4.3,
-		"company":4.3,
-		"went":4.3,
-		"completely":4.3,
-		"back":4.2,
-		"only":3.9,
-		"doesn't":3.8,
-		"talk":3.7,
-		"PHONE":3.7,
-		"hours":3.7
-	}
-	mask = np.array(Image.open('./img/good_cloud.jpeg')) # 定义词频背景
-	wc = wordcloud.WordCloud(
-	    background_color='white', # 设置背景颜色
-	    # font_path='/System/Library/Fonts/Hiragino Sans GB.ttc', # 设置字体格式
-	    mask=mask, # 设置背景图
-	    max_words=100, # 最多显示词数
-	    max_font_size=200 , # 字体最大值
-	    scale=50  # 调整图片清晰度，值越大越清楚
-	)
-	wc.generate_from_frequencies(bad_dic) # 从字典生成词云
-	color_mask = np.array(Image.open('./img/bad_cloud.jpg')) # 定义词云颜色
-	image_colors = wordcloud.ImageColorGenerator(color_mask) # 从背景图建立颜色方案
-	wc.recolor(color_func=image_colors) # 将词云颜色设置为背景图方案
-	wc.to_file("./img/bad.jpeg") # 将图片输出为文件
-	plt.imshow(wc) # 显示词云
-	plt.axis('off') # 关闭坐标轴
-	plt.show() # 显示图像	
+# if __name__ == "__main__":
+# 	# classifier_f = open("./bayes_model/naivebayes.pickle", "rb")
+# 	# classifier = pickle.load(classifier_f)
+# 	# classifier_f.close()
+# 	# classifier.show_most_informative_features(100)
+# 	# class_ = classifier.prob_classify({"good":True})
+# 	# print(class_.prob(1), class_.prob(0))
+# 	# good_dic = {"works":21,
+# 	# 		"nice":9.7,
+# 	# 		"great":9.3,
+# 	# 		"Excellent":9.0,
+# 	# 		"price":8.4,
+# 	# 		"fine":8.3,
+# 	# 		"best":7.0,
+# 	# 		"lot":6.3,
+# 	# 		"fits":6.3,
+# 	# 		"cell":6.1,
+# 	# 		"free":5.7,
+# 	# 		"years":5.7,
+# 	# 		"highly":5.0,
+# 	# 		"Jabra":5.0,
+# 	# 		"without":5.0,
+# 	# 		"handas":5.0,
+# 	# 		"high":4.6,
+# 	# 		"quick":4,
+# 	# 		"well":4,
+# 	# 		"semm":4,
+# 	# 		"ears":4,
+# 	# 		"working":4
+# 	# 		}
+# 	bad_dic = {
+# 		"money":12.3,
+# 		"Not":9.7,
+# 		"Does":7.7,
+# 		"If":7.7,
+# 		"turn":6.6,
+# 		"calls":6.3,
+# 		"first":5.8,
+# 		"ON":5.7,
+# 		"No":5.2,
+# 		"by":5.0,
+# 		"will":5.0,
+# 		"hear":4.6,
+# 		"take":4.6,
+# 		"customer":4.3,
+# 		"company":4.3,
+# 		"went":4.3,
+# 		"completely":4.3,
+# 		"back":4.2,
+# 		"only":3.9,
+# 		"doesn't":3.8,
+# 		"talk":3.7,
+# 		"PHONE":3.7,
+# 		"hours":3.7
+# 	}
+# 	mask = np.array(Image.open('./img/good_cloud.jpeg')) # 定义词频背景
+# 	wc = wordcloud.WordCloud(
+# 	    background_color='white', # 设置背景颜色
+# 	    # font_path='/System/Library/Fonts/Hiragino Sans GB.ttc', # 设置字体格式
+# 	    mask=mask, # 设置背景图
+# 	    max_words=100, # 最多显示词数
+# 	    max_font_size=200 , # 字体最大值
+# 	    scale=50  # 调整图片清晰度，值越大越清楚
+# 	)
+# 	wc.generate_from_frequencies(bad_dic) # 从字典生成词云
+# 	color_mask = np.array(Image.open('./img/bad_cloud.jpg')) # 定义词云颜色
+# 	image_colors = wordcloud.ImageColorGenerator(color_mask) # 从背景图建立颜色方案
+# 	wc.recolor(color_func=image_colors) # 将词云颜色设置为背景图方案
+# 	wc.to_file("./img/bad.jpeg") # 将图片输出为文件
+# 	plt.imshow(wc) # 显示词云
+# 	plt.axis('off') # 关闭坐标轴
+# 	plt.show() # 显示图像	
 
 
 

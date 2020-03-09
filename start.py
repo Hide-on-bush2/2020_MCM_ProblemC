@@ -13,13 +13,14 @@ import tensorflow as tf
 from merge_data import merge_data, merge_value
 from vote2num import vote2num
 from entropy import get_entropy
+from review_star import naive_bayes
 
 
 
 if __name__ == "__main__":
-	product_name = "microwave"
+	product_name = "hair_dryer"
 	# product = view("./data/" + product_name + ".tsv")
-	# product = pd.read_csv("./data_after_clean/" + product_name + "_clean.csv")
+	product = pd.read_csv("./data_after_clean/" + product_name + "_clean.csv")
 
 	# product = pacifier_clean("./data/pacifier.tsv")
 	# product = clean_data(product, product_name)
@@ -27,7 +28,12 @@ if __name__ == "__main__":
 	# product = try_run(product, 3457, 10000)
 
 	# num = product.shape[0]
-	# word2cloud(text)
+	# text = ""
+	# for i in range(num):
+	# 	text += product.loc[i, "review_body"]
+	# 	print(i)
+	# word2cloud(text, product_name)
+
 	# num_word = Word2Num(dryer["review_body"])
 
 	# classifier_f = open("./bayes_model/naivebayes.pickle", "rb")
@@ -92,17 +98,19 @@ if __name__ == "__main__":
 
 	#将标星，投票量化，评论量化，销售量做表
 	# value_data = merge_value(all_tabel, scores, y_label, votes, product_name)
-	value_data = pd.read_csv("./value_data/" + product_name + "_value.csv")
+	# value_data = pd.read_csv("./value_data/" + product_name + "_value.csv")
 	# print(value_data)
 
 	#测试信息熵
-	print("star_rating:")
-	print(get_entropy(value_data["star_rating"], "star_rating"))
-	print("helpful_votes")
-	print(get_entropy(value_data["vote_values"], "helpful_votes"))
-	print("review_scores")
-	print(get_entropy(value_data["review_scores"], "review_score"))
+	# print("star_rating:")
+	# print(get_entropy(value_data["star_rating"], "star_rating"))
+	# print("helpful_votes")
+	# print(get_entropy(value_data["vote_values"], "helpful_votes"))
+	# print("review_scores")
+	# print(get_entropy(value_data["review_scores"], "review_score"))
 	
+	# e题
+	naive_bayes(product, product_name)
 
 
 
